@@ -3,7 +3,6 @@
 This is a [Stomp protocol](https://stomp.github.io/) client library for [k6](https://k6.io),
 implemented as an extension using the [xk6](https://github.com/grafana/xk6) system.
 
-
 ## Build
 
 To build a `k6` binary with this extension, first ensure you have the prerequisites:
@@ -14,14 +13,16 @@ To build a `k6` binary with this extension, first ensure you have the prerequisi
 Then:
 
 1. Install `xk6`:
-  ```shell
-  go install go.k6.io/xk6/cmd/xk6@latest
-  ```
+
+```shell
+go install go.k6.io/xk6/cmd/xk6@latest
+```
 
 2. Build the binary:
-  ```shell
-  xk6 build --with github.com/walterwanderley/xk6-stomp
-  ```
+
+```shell
+xk6 build --with github.com/jerrylam-kickscrew/xk6-stomp
+```
 
 ## Example test script
 
@@ -35,52 +36,52 @@ docker run -p 8161:8161 -p 61613:61613 rmohr/activemq
 
 ```javascript
 // test.js
-import stomp from 'k6/x/stomp';
+import stomp from "k6/x/stomp";
 
 // connect to broker
 const client = stomp.connect({
-    addr: 'localhost:61613',
-    timeout: '2s',
+  addr: "localhost:61613",
+  timeout: "2s",
 });
 
 export default function () {
-    // send a message to '/my/destination' with text/plain as MIME content-type
-    client.send('my/destination', 'text/plain', 'Hello xk6-stomp!');
+  // send a message to '/my/destination' with text/plain as MIME content-type
+  client.send("my/destination", "text/plain", "Hello xk6-stomp!");
 
-    const subscribeOpts = {
-        ack: 'client' // client-individual or auto (default)
-    }
-    // subscribe to receive messages from 'my/destination' with the client ack mode
-    const subscription = client.subscribe('my/destination', subscribeOpts); 
+  const subscribeOpts = {
+    ack: "client", // client-individual or auto (default)
+  };
+  // subscribe to receive messages from 'my/destination' with the client ack mode
+  const subscription = client.subscribe("my/destination", subscribeOpts);
 
-    // read the message
-    const msg = subscription.read();
+  // read the message
+  const msg = subscription.read();
 
-    // show the message as a string
-    console.log('msg', msg.string());
-    
-    // ack the message
-    client.ack(msg);
-    
-    // unsubscribe from destination
-    subscription.unsubscribe();
+  // show the message as a string
+  console.log("msg", msg.string());
+
+  // ack the message
+  client.ack(msg);
+
+  // unsubscribe from destination
+  subscription.unsubscribe();
 }
 
 export function teardown() {
-    // disconnect from broker
-    client.disconnect();
+  // disconnect from broker
+  client.disconnect();
 }
 ```
 
 3. Result output:
 
 ```shell
-$ ./k6 run _examples/test.js 
+$ ./k6 run _examples/test.js
 
-          /\      |‾‾| /‾‾/   /‾‾/   
-     /\  /  \     |  |/  /   /  /    
-    /  \/    \    |     (   /   ‾‾\  
-   /          \   |  |\  \ |  (‾)  | 
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
   / __________ \  |__| \__\ \_____/ .io
 
   execution: local
@@ -103,7 +104,7 @@ default ✓ [======================================] 1 VUs  00m00.0s/10m0s  1/1 
      iterations...........: 1     48.05613/s
      stomp_ack_count......: 1     48.05613/s
      stomp_read_count.....: 1     48.05613/s
-     stomp_read_time......: avg=6.2ms  min=6.2ms  med=6.2ms  max=6.2ms  p(90)=6.2ms  p(95)=6.2ms 
+     stomp_read_time......: avg=6.2ms  min=6.2ms  med=6.2ms  max=6.2ms  p(90)=6.2ms  p(95)=6.2ms
      stomp_send_count.....: 1     48.05613/s
      stomp_send_time......: avg=5.5µs  min=5.5µs  med=5.5µs  max=5.5µs  p(90)=5.5µs  p(95)=5.5µs
 ```
