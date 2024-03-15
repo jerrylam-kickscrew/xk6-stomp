@@ -24,6 +24,10 @@ func (m *Message) String() string {
 	return string(m.Body)
 }
 
+func (m *Message) Header(key string) string{
+	return m.Header.Get(key)
+}
+
 func (m *Message) JSON(selector ...string) goja.Value {
 	rt := m.vu.Runtime()
 	if m.vu.State() == nil {
